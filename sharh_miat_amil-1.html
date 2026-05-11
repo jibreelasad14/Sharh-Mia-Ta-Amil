@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شرح مئة عامل — عبد القاهر الجرجاني</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   ROOT TOKENS
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --ink:        #0f0e0b;
+  --parchment:  #f5edd8;
+  --parch-deep: #ede0c0;
+  --parch-mid:  #e8d5a3;
+  --gold:       #b8902a;
+  --gold-light: #d4aa45;
+  --gold-pale:  #f0d98a;
+  --gold-dim:   #7a5f1a;
+  --crimson:    #7a1a1a;
+  --crimson-lt: #9b2525;
+  --navy:       #1a2640;
+  --navy-lt:    #243352;
+  --text:       #1c180f;
+  --text-soft:  #4a4030;
+  --text-faint: #7a6a50;
+  --border:     #c8a84040;
+  --shadow:     rgba(10, 8, 2, 0.18);
+
+  --font-arabic: 'Noto Naskh Arabic', 'Traditional Arabic', serif;
+  --font-quran:  'Noto Naskh Arabic', 'Traditional Arabic', serif;
+  --font-latin:  Georgia, serif;
+
+  --page-max: 820px;
+  --toc-w:    280px;
+  --gutter:   clamp(1.5rem, 5vw, 4rem);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: #1a1408;
+  color: var(--text);
+  font-family: var(--font-arabic);
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 2;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATED GEOMETRIC BACKGROUND (Islamic star pattern via SVG)
+═══════════════════════════════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23b8902a' stroke-width='0.4' opacity='0.18'%3E%3Cpolygon points='40,4 47,26 70,26 52,40 59,62 40,49 21,62 28,40 10,26 33,26'/%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='36'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 80px 80px;
+  pointer-events: none;
+  z-index: 0;
+  animation: patternDrift 60s linear infinite;
+}
+
+@keyframes patternDrift {
+  from { background-position: 0 0; }
+  to   { background-position: 80px 80px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT WRAPPER
+═══════════════════════════════════════════════════════════════ */
+.layout {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR / TABLE OF CONTENTS
+═══════════════════════════════════════════════════════════════ */
+.toc-sidebar {
+  position: fixed;
+  top: 0; right: 0;
+  width: var(--toc-w);
+  height: 100vh;
+  background: linear-gradient(180deg, #0d0b06 0%, #1a1408 40%, #0f0c07 100%);
+  border-left: 1px solid var(--gold-dim);
+  overflow-y: auto;
+  z-index: 100;
+  padding: 2rem 1.2rem 2rem 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-dim) transparent;
+  transition: transform 0.35s ease;
+}
+
+.toc-sidebar::-webkit-scrollbar { width: 4px; }
+.toc-sidebar::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+.toc-header {
+  font-family: var(--font-arabic);
+  color: var(--gold-light);
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.05em;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--gold-dim);
+  direction: rtl;
+}
+
+.toc-header .ornament {
+  display: block;
+  font-size: 1.4rem;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.toc-list { list-style: none; direction: rtl; }
+
+.toc-list li { margin-bottom: 0.15rem; }
+
+.toc-list a {
+  display: block;
+  color: var(--parch-mid);
+  text-decoration: none;
+  font-size: 0.82rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  border-right: 2px solid transparent;
+  transition: all 0.2s;
+  direction: rtl;
+  text-align: right;
+  line-height: 1.5;
+}
+
+.toc-list a:hover,
+.toc-list a.active {
+  color: var(--gold-light);
+  border-right-color: var(--gold);
+  background: rgba(184, 144, 42, 0.08);
+}
+
+.toc-list .toc-part > a {
+  color: var(--gold-light);
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-top: 0.8rem;
+}
+
+/* Mobile TOC toggle */
+.toc-toggle {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 200;
+  background: var(--gold);
+  color: #0f0e0b;
+  border: none;
+  border-radius: 50%;
+  width: 48px; height: 48px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════════════════════════ */
+.main-content {
+  margin-right: var(--toc-w);
+  flex: 1;
+  padding: 0 var(--gutter) 6rem;
+  max-width: calc(var(--page-max) + var(--gutter) * 2);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TITLE PAGE
+═══════════════════════════════════════════════════════════════ */
+.title-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1rem;
+  position: relative;
+}
+
+/* Central illuminated frame */
+.title-frame {
+  position: relative;
+  padding: 3.5rem 3rem;
+  max-width: 600px;
+  width: 100%;
+  background:
+    radial-gradient(ellipse at center, #2a1f08 0%, #1a1208 60%, #0f0c06 100%);
+  border: 1px solid var(--gold-dim);
+  box-shadow:
+    0 0 0 4px #1a1208,
+    0 0 0 5px var(--gold-dim),
+    0 0 60px rgba(184,144,42,0.15),
+    inset 0 0 40px rgba(0,0,0,0.4);
+}
+
+/* Corner ornaments */
+.title-frame::before,
+.title-frame::after {
+  content: '';
+  position: absolute;
+  width: 50px; height: 50px;
+  border-color: var(--gold);
+  border-style: solid;
+}
+.title-frame::before {
+  top: 10px; right: 10px;
+  border-width: 2px 2px 0 0;
+}
+.title-frame::after {
+  bottom: 10px; left: 10px;
+  border-width: 0 0 2px 2px;
+}
+
+.title-corner-bl,
+.title-corner-tr {
+  position: absolute;
+  width: 50px; height: 50px;
+  border-color: var(--gold);
+  border-style: solid;
+}
+.title-corner-bl { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
+.title-corner-tr { top: 10px;    left: 10px;  border-width: 2px 0 0 2px; }
+
+.basmala {
+  font-family: var(--font-quran);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--gold-light);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  text-shadow: 0 0 30px rgba(184,144,42,0.4);
+  animation: fadeDown 1s ease 0.2s both;
+}
+
+.title-divider {
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 1.2rem auto;
+  animation: fadeIn 1s ease 0.4s both;
+}
+
+.main-title {
+  font-family: var(--font-arabic);
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 700;
+  color: var(--parchment);
+  line-height: 1.3;
+  margin: 0.5rem 0;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+  animation: fadeDown 1s ease 0.5s both;
+}
+
+.main-title em {
+  color: var(--gold-light);
+  font-style: normal;
+  display: block;
+  font-size: 0.6em;
+  margin-top: 0.3rem;
+}
+
+.subtitle {
+  font-family: var(--font-arabic);
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: var(--parch-mid);
+  margin: 1rem 0 2rem;
+  animation: fadeDown 1s ease 0.7s both;
+}
+
+.author-block {
+  margin-top: 1.5rem;
+  animation: fadeDown 1s ease 0.9s both;
+}
+
+.author-label {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.author-name {
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.author-rahima {
+  font-size: 0.9rem;
+  color: var(--text-faint);
+  font-style: italic;
+  margin-top: 0.2rem;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold-dim);
+  font-size: 1.4rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(8px); }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE / PARCHMENT CONTAINER
+═══════════════════════════════════════════════════════════════ */
+.page {
+  background:
+    /* subtle paper grain */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
+    linear-gradient(160deg, #f8f0dc 0%, #f2e8cc 30%, #ede0bc 70%, #f0e5cc 100%);
+  border: 1px solid var(--parch-mid);
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.08),
+    0 8px 32px var(--shadow),
+    0 32px 80px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  border-radius: 2px;
+  margin: 0 auto 3rem;
+  max-width: var(--page-max);
+  padding: 3.5rem clamp(2rem, 6vw, 4rem);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Inner decorative border */
+.page::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid var(--gold-dim);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Left spine shadow */
+.page::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: linear-gradient(90deg, rgba(0,0,0,0.12), transparent);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   OPENING / MUQADDIMA
+═══════════════════════════════════════════════════════════════ */
+.muqaddima-basmala {
+  text-align: center;
+  font-family: var(--font-quran);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: var(--crimson);
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: double 3px var(--gold-dim);
+  line-height: 1.8;
+}
+
+.hamd {
+  text-align: center;
+  font-size: 1.15em;
+  color: var(--navy);
+  font-style: italic;
+  padding: 1.2rem 2rem;
+  border-right: 3px solid var(--gold);
+  background: linear-gradient(90deg, rgba(184,144,42,0.06), transparent);
+  margin: 1.5rem 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.muqaddima-body {
+  font-size: 1em;
+  text-align: justify;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION / NAW' HEADINGS
+═══════════════════════════════════════════════════════════════ */
+.section-header {
+  text-align: center;
+  margin: 0 -4rem 2rem;
+  padding: 1.5rem 4rem;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-lt) 50%, var(--navy) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.section-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(184,144,42,0.04) 10px,
+      rgba(184,144,42,0.04) 20px
+    );
+}
+
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.section-num {
+  font-family: var(--font-arabic);
+  font-size: 0.8rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.15em;
+  display: block;
+  margin-bottom: 0.3rem;
+  position: relative;
+}
+
+.section-title {
+  font-family: var(--font-arabic);
+  font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+  font-weight: 700;
+  color: var(--gold-light);
+  line-height: 1.4;
+  position: relative;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Part headings (Qiyasiyya / Ma'nawiyya) */
+.part-header {
+  text-align: center;
+  margin: 3rem -4rem 2.5rem;
+  padding: 2rem 4rem;
+  background:
+    linear-gradient(135deg, #0f0c06 0%, #1a1408 50%, #0f0c06 100%);
+  border-top: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  position: relative;
+}
+
+.part-header .ornament-row {
+  color: var(--gold-dim);
+  font-size: 1.2rem;
+  letter-spacing: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.part-header h2 {
+  font-family: var(--font-arabic);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 700;
+  color: var(--gold-light);
+  text-shadow: 0 0 30px rgba(184,144,42,0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SUB-HEADINGS (individual particles)
+═══════════════════════════════════════════════════════════════ */
+.particle-heading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0 0.6rem;
+  direction: rtl;
+}
+
+.particle-heading .letter {
+  font-family: var(--font-arabic);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--crimson);
+  background: linear-gradient(135deg, #f8f0dc, #ede0c0);
+  border: 1px solid var(--gold-dim);
+  border-radius: 3px;
+  width: 3rem; height: 3rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.particle-heading .label {
+  font-family: var(--font-arabic);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--navy);
+  flex: 1;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid var(--gold-dim);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BODY TEXT
+═══════════════════════════════════════════════════════════════ */
+.body-text {
+  font-family: var(--font-arabic);
+  font-size: 1em;
+  line-height: 2.1;
+  color: var(--text);
+  text-align: justify;
+  margin-bottom: 1rem;
+  direction: rtl;
+}
+
+.body-text + .body-text { margin-top: 0.25rem; }
+
+/* Quranic verse inline */
+.ayah {
+  color: var(--crimson);
+  font-weight: 700;
+}
+
+/* Inline example */
+.example {
+  color: var(--navy);
+  font-style: italic;
+}
+
+/* List items */
+.item-list {
+  list-style: none;
+  margin: 0.8rem 0 1rem;
+  padding: 0;
+  direction: rtl;
+}
+
+.item-list li {
+  font-family: var(--font-arabic);
+  font-size: 1em;
+  line-height: 2;
+  color: var(--text);
+  padding: 0.35rem 0 0.35rem 0;
+  border-bottom: 1px solid rgba(184,144,42,0.15);
+  display: flex;
+  gap: 0.8rem;
+  align-items: baseline;
+  direction: rtl;
+  text-align: right;
+}
+
+.item-list li:last-child { border-bottom: none; }
+
+.item-list li .bullet {
+  color: var(--gold);
+  font-size: 0.8em;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PULL QUOTE / HIGHLIGHTED RULE
+═══════════════════════════════════════════════════════════════ */
+.pull-rule {
+  background: linear-gradient(135deg, rgba(26,38,64,0.07), rgba(26,38,64,0.03));
+  border-right: 4px solid var(--navy);
+  border-radius: 0 6px 6px 0;
+  padding: 1rem 1.5rem 1rem 1rem;
+  margin: 1.5rem 0;
+  font-size: 0.95em;
+  color: var(--navy);
+  direction: rtl;
+  text-align: right;
+  line-height: 2;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ORNAMENTAL DIVIDERS
+═══════════════════════════════════════════════════════════════ */
+.ornament-divider {
+  text-align: center;
+  margin: 2.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--gold-dim);
+}
+
+.ornament-divider::before,
+.ornament-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim));
+}
+.ornament-divider::after {
+  background: linear-gradient(90deg, var(--gold-dim), transparent);
+}
+
+.ornament-divider span {
+  font-size: 1.4rem;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COLOPHON
+═══════════════════════════════════════════════════════════════ */
+.colophon {
+  text-align: center;
+  padding: 3rem 2rem;
+  background:
+    radial-gradient(ellipse at center, rgba(26,38,64,0.08) 0%, transparent 70%);
+  border: 1px solid var(--gold-dim);
+  margin: 2rem -1rem 0;
+  position: relative;
+}
+
+.colophon::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(184,144,42,0.2);
+  pointer-events: none;
+}
+
+.colophon .tammat {
+  font-family: var(--font-arabic);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  color: var(--crimson);
+  margin-bottom: 1rem;
+}
+
+.colophon .salah {
+  font-family: var(--font-arabic);
+  font-size: 1rem;
+  color: var(--text-faint);
+  line-height: 1.8;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════════════════════════ */
+.progress-bar {
+  position: fixed;
+  top: 0; right: 0; left: 0;
+  height: 3px;
+  background: var(--gold);
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 300;
+  transition: transform 0.1s;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL ANIMATION
+═══════════════════════════════════════════════════════════════ */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .toc-sidebar {
+    transform: translateX(100%);
+  }
+  .toc-sidebar.open {
+    transform: translateX(0);
+  }
+  .main-content {
+    margin-right: 0;
+    padding: 0 1rem 4rem;
+  }
+  .toc-toggle { display: flex; align-items: center; justify-content: center; }
+  .section-header { margin: 0 -2rem 2rem; padding: 1.5rem 2rem; }
+  .part-header { margin: 3rem -2rem 2.5rem; padding: 2rem 2rem; }
+  .page { padding: 2.5rem 1.5rem; }
+  .page::before { inset: 8px; }
+}
+
+@media (max-width: 500px) {
+  .title-frame { padding: 2.5rem 1.5rem; }
+  .particle-heading .letter { width: 2.5rem; height: 2.5rem; font-size: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="layout">
+
+  <!-- ══════ SIDEBAR TOC ══════ -->
+  <aside class="toc-sidebar" id="tocSidebar">
+    <div class="toc-header">
+      <span class="ornament">☽</span>
+      فهرس الكتاب
+    </div>
+    <ul class="toc-list">
+      <li><a href="#title">صفحة العنوان</a></li>
+      <li><a href="#muqaddima">المقدمة</a></li>
+      <li class="toc-part"><a href="#samaiyya">العوامل السماعية</a></li>
+      <li><a href="#naw1">النوع الأول: حروف الجر</a></li>
+      <li><a href="#naw2">النوع الثاني: الحروف المشبهة بالفعل</a></li>
+      <li><a href="#naw3">النوع الثالث: ما ولا المشبهتان بليس</a></li>
+      <li><a href="#naw4">النوع الرابع: ما ينصب الاسم</a></li>
+      <li><a href="#naw5">النوع الخامس: نواصب المضارع</a></li>
+      <li><a href="#naw6">النوع السادس: جوازم المضارع</a></li>
+      <li><a href="#naw7">النوع السابع: أسماء الشرط</a></li>
+      <li><a href="#naw8">النوع الثامن: أسماء التمييز</a></li>
+      <li><a href="#naw9">النوع التاسع: أسماء الأفعال</a></li>
+      <li><a href="#naw10">النوع العاشر: الأفعال الناقصة</a></li>
+      <li><a href="#naw11">النوع الحادي عشر: أفعال المقاربة</a></li>
+      <li><a href="#naw12">النوع الثاني عشر: أفعال المدح والذم</a></li>
+      <li><a href="#naw13">النوع الثالث عشر: أفعال القلوب</a></li>
+      <li class="toc-part"><a href="#qiyasiyya">العوامل القياسية</a></li>
+      <li><a href="#q1">الأول: الفعل</a></li>
+      <li><a href="#q2">الثاني: المصدر</a></li>
+      <li><a href="#q3">الثالث: اسم الفاعل</a></li>
+      <li><a href="#q4">الرابع: اسم المفعول</a></li>
+      <li><a href="#q5">الخامس: الصفة المشبهة</a></li>
+      <li><a href="#q6">السادس: المضاف</a></li>
+      <li><a href="#q7">السابع: الاسم التام</a></li>
+      <li class="toc-part"><a href="#maanawiyya">العوامل المعنوية</a></li>
+      <li><a href="#colophon">الخاتمة</a></li>
+    </ul>
+  </aside>
+
+  <!-- ══════ MAIN ══════ -->
+  <main class="main-content">
+
+    <!-- ── TITLE PAGE ── -->
+    <section class="title-page" id="title">
+      <div class="title-frame">
+        <div class="title-corner-bl"></div>
+        <div class="title-corner-tr"></div>
+
+        <div class="basmala">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+
+        <div class="title-divider"></div>
+
+        <h1 class="main-title">
+          شرح مئة عامل
+          <em>في معرفة عوامل الإعراب</em>
+        </h1>
+
+        <div class="title-divider"></div>
+
+        <div class="subtitle">من أجمع ما ألُّف في علم النحو</div>
+
+        <div class="author-block">
+          <span class="author-label">تأليف الشيخ الإمام</span>
+          <div class="author-name">عبد القاهر بن عبد الرحمن الجرجاني</div>
+          <div class="author-rahima">رحمه الله تعالى</div>
+        </div>
+      </div>
+      <div class="scroll-hint">↓</div>
+    </section>
+
+    <!-- ── MUQADDIMA ── -->
+    <article class="page fade-in" id="muqaddima">
+      <div class="muqaddima-basmala">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+
+      <p class="hamd">الحمد لله على نعمائه الشاملة، وآلائه الكاملة، والصلاة على سيد الأنبياء محمد المصطفى، وعلى آله المجتبى.</p>
+
+      <p class="body-text">اعلم أن العوامل في النحو على ما ألفه الشيخ الإمام أفضل علماء الأنام عبد القاهر بن عبد الرحمن الجرجاني — سقى الله ثراه وجعل الجنة مثواه — مائة عامل لفظية ومعنوية؛ فاللفظية منها على ضربين: سماعية وقياسية. فالسماعية منها أحد وتسعون عاملاً، والقياسية منها سبعة عوامل، والمعنوية منها عددان. وتتنوع السماعية منها على ثلاثة عشر نوعاً.</p>
+
+      <div class="ornament-divider"><span>❧</span></div>
+    </article>
+
+    <!-- ════════════════════════════════════
+         SAMAIYYA
+    ════════════════════════════════════ -->
+
+    <!-- NAW' 1 -->
+    <article class="page fade-in" id="naw1">
+      <div class="section-header">
+        <span class="section-num">النوع الأول</span>
+        <h2 class="section-title">حروف الجر</h2>
+      </div>
+
+      <p class="body-text">حروف تجر الاسم فقط، وتُسمَّى «حروفاً جارة»، وهي سبعة عشر حرفاً:</p>
+
+      <div class="particle-heading">
+        <div class="letter">ب</div>
+        <div class="label">الباء</div>
+      </div>
+      <p class="body-text">للإلصاق — وهو اتصال الشيء بالشيء إما حقيقةً نحو: <span class="example">«به داء»</span>، وإما مجازاً نحو: <span class="example">«مررت بزيد»</span>. وللاستعانة نحو: <span class="example">«كتبت بالقلم»</span>. وللتعليل نحو: <span class="ayah">﴿إِنَّكُمْ ظَلَمْتُمْ أَنفُسَكُمْ بِاتِّخَاذِكُمُ الْعِجْلَ﴾</span> [البقرة: ٥٤]. وللمصاحبة والتعدية والمقابلة والقسم والاستعطاف والظرفية والزيادة.</p>
+
+      <div class="particle-heading">
+        <div class="letter">ل</div>
+        <div class="label">اللام</div>
+      </div>
+      <p class="body-text">للاختصاص نحو: <span class="example">«الجُلُّ للفرس»</span>. وللزيادة نحو: <span class="ayah">﴿رَدِفَ لَكُمْ﴾</span>. وللتعليل نحو: <span class="example">«جئتك لإكرامك»</span>. وللقسم والمعاقبة.</p>
+
+      <div class="particle-heading">
+        <div class="letter">من</div>
+        <div class="label">مِن</div>
+      </div>
+      <p class="body-text">لابتداء الغاية نحو: <span class="example">«سرت من البصرة إلى الكوفة»</span>. وللتبعيض. وللتبيين نحو: <span class="ayah">﴿فَاجْتَنِبُوا الرِّجْسَ مِنَ الأَوْثَانِ﴾</span>. وللزيادة نحو: <span class="ayah">﴿يَغْفِرْ لَكُم مِّن ذُنُوبِكُمْ﴾</span>.</p>
+
+      <div class="particle-heading">
+        <div class="letter">إلى</div>
+        <div class="label">إلى</div>
+      </div>
+      <p class="body-text">لانتهاء الغاية في المكان. وللمصاحبة. وقد يكون ما بعدها داخلاً في ما قبلها إن كان من جنسه كـ<span class="ayah">﴿وَأَيْدِيَكُمْ إِلَى الْمَرَافِقِ﴾</span>، وقد لا يدخل كـ<span class="ayah">﴿ثُمَّ أَتِمُّوا الصِّيَامَ إِلَى اللَّيْلِ﴾</span>.</p>
+
+      <div class="particle-heading">
+        <div class="letter">حتى</div>
+        <div class="label">حتى</div>
+      </div>
+      <p class="body-text">لانتهاء الغاية في الزمان والمكان. وللمصاحبة. وهي مختصة بالاسم الظاهر بخلاف «إلى»؛ فلا يقال «حتاه» ويقال «إليه».</p>
+
+      <div class="particle-heading">
+        <div class="letter">على</div>
+        <div class="label">على</div>
+      </div>
+      <p class="body-text">للاستعلاء نحو: <span class="example">«زيد على السطح»</span>. وقد تكون بمعنى الباء أو «في» كـ<span class="ayah">﴿وَإِنْ كُنتُمْ عَلَى سَفَرٍ﴾</span>.</p>
+
+      <div class="particle-heading">
+        <div class="letter">عن</div>
+        <div class="label">عن</div>
+      </div>
+      <p class="body-text">للبعد والمجاوزة نحو: <span class="example">«رميت السهم عن القوس»</span>.</p>
+
+      <div class="particle-heading">
+        <div class="letter">في</div>
+        <div class="label">في</div>
+      </div>
+      <p class="body-text">للظرفية نحو: <span class="example">«المال في الكيس»</span>. وللاستعلاء كـ<span class="ayah">﴿وَلَأُصَلِّبَنَّكُمْ فِي جُذُوعِ النَّخْلِ﴾</span>.</p>
+
+      <div class="particle-heading">
+        <div class="letter">ك</div>
+        <div class="label">الكاف</div>
+      </div>
+      <p class="body-text">للتشبيه نحو: <span class="example">«زيد كالأسد»</span>. وقد تكون زائدة كـ<span class="ayah">﴿لَيْسَ كَمِثْلِهِ شَيْءٌ﴾</span>.</p>
+
+      <div class="particle-heading">
+        <div class="letter">مذ</div>
+        <div class="label">مُذ ومُنذ</div>
+      </div>
+      <p class="body-text">لابتداء الغاية في الزمان الماضي. وقد تكونان بمعنى جميع المدة نحو: <span class="example">«ما رأيته مذ يومين»</span> أي جميع مدة الانقطاع يومان.</p>
+
+      <div class="particle-heading">
+        <div class="letter">رب</div>
+        <div class="label">رُبَّ</div>
+      </div>
+      <p class="body-text">للتقليل، ولا يكون مجرورها إلا نكرةً موصوفةً، ولا متعلقه إلا فعلاً ماضياً، نحو: <span class="example">«رب رجل كريم لقيته»</span>.</p>
+
+      <div class="particle-heading">
+        <div class="letter">و ت</div>
+        <div class="label">الواو والتاء للقسم</div>
+      </div>
+      <p class="body-text">الواو للقسم ولا تدخل إلا على الاسم الظاهر نحو: <span class="example">«والله لأشربن اللبن»</span>. والتاء لا تدخل إلا على اسم الله تعالى نحو: <span class="example">«تالله لأضربن زيداً»</span>.</p>
+
+      <div class="pull-rule">
+        <strong>أحكام القَسَم:</strong> لا بد للقسم من جواب. فإن كان جملةً اسميةً مثبتةً وجب تصديرها بـ«إن» أو «لام الابتداء». وإن كانت منفيةً فبـ«ما» أو «لا» أو «إن». وإن كان جوابه جملةً فعليةً مثبتةً فباللام مع «قد» أو باللام وحده. وإن كانت منفيةً فإن كانت ماضيةً فبـ«ما»، وإن كانت مضارعةً فبـ«ما» أو «لا» أو «لن».
+      </div>
+
+      <div class="particle-heading">
+        <div class="letter">خلا</div>
+        <div class="label">حاشا وخلا وعدا</div>
+      </div>
+      <p class="body-text">كل منها للاستثناء. وقيل: إن الاسم بعدها منصوب على المفعولية فتكون أفعالاً وفاعلها ضمير مستتر. وإذا وقعت «خلا» و«عدا» بعد «ما» أو في صدر الكلام تعينت للفعلية.</p>
+
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 2 -->
+    <article class="page fade-in" id="naw2">
+      <div class="section-header">
+        <span class="section-num">النوع الثاني</span>
+        <h2 class="section-title">الحروف المشبَّهة بالفعل</h2>
+      </div>
+
+      <p class="body-text">هي تدخل على المبتدأ والخبر فتنصب المبتدأ وترفع الخبر، وهي ستة حروف:</p>
+
+      <ul class="item-list">
+        <li><span class="bullet">◆</span><span><strong>إنَّ وأنَّ</strong> — لتحقيق مضمون الجملة الاسمية، نحو: <span class="example">«إن زيداً قائم»</span>، و<span class="example">«بلغني أن زيداً منطلق»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>كأنَّ</strong> — للتشبيه، نحو: <span class="example">«كأن زيداً أسد»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>لكنَّ</strong> — للاستدراك، لا تقع إلا بين جملتين متغايرتين بالمفهوم، نحو: <span class="example">«غاب زيد لكن بكراً حاضر»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>ليت</strong> — للتمني، نحو: <span class="example">«ليت زيداً قائم»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>لعل</strong> — للترجي، نحو: <span class="example">«لعل السلطان يكرمني»</span>. والفرق أن التمني يستعمل في الممكنات والممتنعات، والترجي مخصوص بالممكنات.</span></li>
+      </ul>
+
+      <p class="body-text">وتدخل «ما» الكافة على جميعها فتكفها عن العمل، كـ<span class="ayah">﴿وَأَنَّمَا إِلَهُكُمْ إِلَهٌ وَاحِدٌ﴾</span> [الكهف: ١١٠].</p>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 3 -->
+    <article class="page fade-in" id="naw3">
+      <div class="section-header">
+        <span class="section-num">النوع الثالث</span>
+        <h2 class="section-title">ما ولا المشبَّهتان بليس</h2>
+      </div>
+      <p class="body-text">«ما» و«لا» المشبهتان بـ«ليس» في النفي، يدخلان على المبتدأ والخبر فيرفعان الاسم وينصبان الخبر. وتدخل «ما» على المعرفة والنكرة نحو: <span class="example">«ما زيد قائماً»</span>. ولا تدخل «لا» إلا على النكرة نحو: <span class="example">«لا رجل ظريفاً»</span>.</p>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 4 -->
+    <article class="page fade-in" id="naw4">
+      <div class="section-header">
+        <span class="section-num">النوع الرابع</span>
+        <h2 class="section-title">حروف تنصب الاسم</h2>
+      </div>
+      <p class="body-text">وهي سبعة أحرف: «الواو» وهي بمعنى «مع» نحو: <span class="example">«استوى الماء والخشبة»</span>. و«إلا» للاستثناء. وحروف النداء الخمسة: «يا» لنداء القريب والبعيد، و«أيا» و«هيا» للبعيد، و«أيْ» و«الهمزة» للقريب. هذه الخمسة تنصب الاسم إن كان مضافاً نحو: <span class="example">«يا عبد الله»</span>، وترفعه إن لم يكن مضافاً نحو: <span class="example">«يا زيد»</span>.</p>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 5 -->
+    <article class="page fade-in" id="naw5">
+      <div class="section-header">
+        <span class="section-num">النوع الخامس</span>
+        <h2 class="section-title">حروف نصب الفعل المضارع</h2>
+      </div>
+      <ul class="item-list">
+        <li><span class="bullet">◆</span><span><strong>أَنْ</strong> — للاستقبال وإن دخلت على الماضي لفظاً، وتسمى مصدرية.</span></li>
+        <li><span class="bullet">◆</span><span><strong>لَنْ</strong> — لتأكيد نفي المستقبل، كـ<span class="ayah">﴿لَن تَرَانِي﴾</span> [الأعراف: ١٤٣]. وأصلها «لا إنْ» عند الخليل.</span></li>
+        <li><span class="bullet">◆</span><span><strong>كَيْ</strong> — للسببية، نحو: <span class="example">«أسلمت كي أدخل الجنة»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>إذَن</strong> — للجواب والجزاء، ولا تدخل إلا على الفعل المستقبل، نحو: <span class="example">«إذن تدخل الجنة»</span> جواباً لمن قال: «أسلمتُ».</span></li>
+      </ul>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 6 -->
+    <article class="page fade-in" id="naw6">
+      <div class="section-header">
+        <span class="section-num">النوع السادس</span>
+        <h2 class="section-title">حروف جزم الفعل المضارع</h2>
+      </div>
+      <ul class="item-list">
+        <li><span class="bullet">◆</span><span><strong>لَمْ</strong> — تجعل المضارع ماضياً منفياً، نحو: <span class="example">«لم يضرب»</span> بمعنى «ما ضرب».</span></li>
+        <li><span class="bullet">◆</span><span><strong>لَمَّا</strong> — مثل «لم» لكنها مختصة بالاستغراق، نحو: <span class="example">«لما يضرب زيد»</span> أي ما ضرب في شيء من الأزمنة.</span></li>
+        <li><span class="bullet">◆</span><span><strong>لام الأمر</strong> — لطلب الفعل من الغائب أو المتكلم أو المفعول، نحو: <span class="example">«ليضرب»</span> و<span class="example">«لأضرب»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>لا النهي</strong> — ضد لام الأمر، لطلب ترك الفعل، نحو: <span class="example">«لا يضرب»</span> و<span class="example">«لا تضرب»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>إنْ الشرطية</strong> — تجزم المضارع وجوباً إن كان شرطاً أو جزاءً، نحو: <span class="example">«إن تضرب أضرب»</span>. وجوازاً إن كان الجزاء وحده مضارعاً نحو: <span class="example">«إن ضربت أضرب»</span>.</span></li>
+      </ul>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 7 -->
+    <article class="page fade-in" id="naw7">
+      <div class="section-header">
+        <span class="section-num">النوع السابع</span>
+        <h2 class="section-title">أسماء الشرط الجازمة</h2>
+      </div>
+      <p class="body-text">أسماء تجزم الفعلين المضارعين لاشتمالها على معنى «إنْ»، وهي تسعة:</p>
+      <ul class="item-list">
+        <li><span class="bullet">◆</span><span><strong>مَنْ</strong> — لذوي العقول، نحو: <span class="example">«من يكرمني أكرمه»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>مَا</strong> — لغير ذوي العقول غالباً، نحو: <span class="example">«ما تشتر أشتر»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>أَيُّ</strong> — لذوي العقول وتلزمه الإضافة، نحو: <span class="example">«أيهم يضربني أضربه»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>مَتَى</strong> — للزمان، نحو: <span class="example">«متى تذهب أذهب»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>أَيْنَمَا</strong> — للمكان، نحو: <span class="example">«أينما تمش أمش»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>أَنَّى</strong> — للمكان أيضاً، نحو: <span class="example">«أنى تكن أكن»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>مَهْمَا</strong> — للزمان، نحو: <span class="example">«مهما تذهب أذهب»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>حَيْثُمَا</strong> — للمكان، نحو: <span class="example">«حيثما تقعد أقعد»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>إِذْمَا</strong> — لغير ذوي العقول، نحو: <span class="example">«إذما تفعل أفعل»</span>.</span></li>
+      </ul>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 8 -->
+    <article class="page fade-in" id="naw8">
+      <div class="section-header">
+        <span class="section-num">النوع الثامن</span>
+        <h2 class="section-title">أسماء التمييز</h2>
+      </div>
+      <p class="body-text">أسماء تنصب الأسماء النكرات على التمييز، وهي أربعة:</p>
+      <ul class="item-list">
+        <li><span class="bullet">◆</span><span><strong>الأعداد المركبة</strong> — من أحد عشر إلى تسعة وتسعين. في المذكر مع «أحد» و«اثنين»: بتذكير الجزأين. ومن ثلاثة إلى تسعة مع عشر: بتأنيث الأول وتذكير الثاني في المذكر وعكسه في المؤنث. وهكذا مع العقود.</span></li>
+        <li><span class="bullet">◆</span><span><strong>كَمْ</strong> — استفهامية تنصب التمييز، وخبرية تنصبه إن كان بينهما فاصل وتجره بالإضافة إن لا فاصل.</span></li>
+        <li><span class="bullet">◆</span><span><strong>كَأَيِّن</strong> — مركب من كاف التشبيه و«أيّ»، للعدد المبهم، نحو: <span class="example">«كأين رجلاً لقيت»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>كَذَا</strong> — مركب من كاف التشبيه و«ذا»، للعدد المبهم، نحو: <span class="example">«عندي كذا رجلاً»</span>.</span></li>
+      </ul>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 9 -->
+    <article class="page fade-in" id="naw9">
+      <div class="section-header">
+        <span class="section-num">النوع التاسع</span>
+        <h2 class="section-title">أسماء الأفعال</h2>
+      </div>
+      <p class="body-text">إنما سميت بذلك لأن معانيها أفعال. ستة منها للأمر الحاضر وتنصب على المفعولية وفاعلها ضمير المخاطب المستتر:</p>
+      <ul class="item-list">
+        <li><span class="bullet">◆</span><span><strong>رُوَيْد</strong> — بمعنى «أمهل»، نحو: <span class="example">«رويد زيداً»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>بَلْهَ</strong> — بمعنى «دع»، نحو: <span class="example">«بله زيداً»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>دُونَك</strong> — بمعنى «خذ»، نحو: <span class="example">«دونك زيداً»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>عَلَيْك</strong> — بمعنى «الزم»، نحو: <span class="example">«عليك زيداً»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>حَيَّهَل</strong> — بمعنى «ايت»، نحو: <span class="example">«حيهل الصلاة»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>هَا</strong> — بمعنى «خذ»، وفيه ثلاث لغات.</span></li>
+      </ul>
+      <p class="body-text">وثلاثة منها للماضي وترفع بالفاعلية:</p>
+      <ul class="item-list">
+        <li><span class="bullet">◆</span><span><strong>هَيْهَات</strong> — بمعنى «بعد»، نحو: <span class="example">«هيهات زيد»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>سَرْعَان</strong> — بمعنى «سرع»، نحو: <span class="example">«سرعان زيد»</span>.</span></li>
+        <li><span class="bullet">◆</span><span><strong>شَتَّان</strong> — بمعنى «افترق»، نحو: <span class="example">«شتان زيد وعمرو»</span>.</span></li>
+      </ul>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 10 -->
+    <article class="page fade-in" id="naw10">
+      <div class="section-header">
+        <span class="section-num">النوع العاشر</span>
+        <h2 class="section-title">الأفعال الناقصة</h2>
+      </div>
+      <p class="body-text">إنما سميت ناقصة لأنها لا تكون مع مجرد الفاعل كلاماً تاماً. تدخل على الجملة الاسمية فترفع الجزء الأول — ويُسمى اسمها — وتنصب الجزء الثاني — ويُسمى خبرها. وهي ثلاثة عشر فعلاً:</p>
+      <ul class="item-list">
+        <li><span class="bullet">١</span><span><strong>كَان</strong> — ناقصة لإثبات الخبر في الزمن الماضي، أو بمعنى «صار». وتامة بمعنى «ثبت». وقد تكون زائدة فلا تعمل.</span></li>
+        <li><span class="bullet">٢</span><span><strong>صَار</strong> — للانتقال من حقيقة إلى أخرى أو من صفة إلى أخرى. وتامة بمعنى الانتقال المكاني تتعدى بـ«إلى».</span></li>
+        <li><span class="bullet">٣٤٥</span><span><strong>أَصْبَح وأَضْحَى وأَمْسَى</strong> — لاقتران مضمون الجملة بأوقاتها. وقد تكون بمعنى «صار» أو تامة.</span></li>
+        <li><span class="bullet">٦٧</span><span><strong>ظَلَّ وبَات</strong> — لاقتران مضمون الجملة بالنهار والليل.</span></li>
+        <li><span class="bullet">٨</span><span><strong>مَا دَام</strong> — لتوقيت شيء بمدة ثبوت خبرها لاسمها.</span></li>
+        <li><span class="bullet">٩ـ١٢</span><span><strong>مَا زَال وما بَرِح وما انْفَك وما فَتِئ</strong> — لدوام ثبوت الخبر لاسمها، وتلزمها النفي.</span></li>
+        <li><span class="bullet">١٣</span><span><strong>لَيْس</strong> — لنفي مضمون الجملة، نحو: <span class="example">«ليس زيد قائماً»</span>.</span></li>
+      </ul>
+      <div class="pull-rule">تقديم أخبار هذه الأفعال على أسمائها جائز بإبقاء عملها. وتقديم أخبارها على أنفسها جائز سوى «ليس» والأفعال ذوات «ما». وحكم مشتقاتها كحكمها في العمل.</div>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 11 -->
+    <article class="page fade-in" id="naw11">
+      <div class="section-header">
+        <span class="section-num">النوع الحادي عشر</span>
+        <h2 class="section-title">أفعال المقاربة</h2>
+      </div>
+      <p class="body-text">إنما سميت بذلك لدلالتها على المقاربة. وهي أربعة:</p>
+      <ul class="item-list">
+        <li><span class="bullet">◆</span><span><strong>عَسَى</strong> — خبره فعل مضارع مع «أن»، بمعنى «قارب». يجب مطابقة الخبر لاسمه في الإفراد والتثنية والجمع والتذكير والتأنيث إن كان الفاعل ظاهراً. وقد يقع «أن يفعل» اسماً فيكون «عسى» تاماً.</span></li>
+        <li><span class="bullet">◆</span><span><strong>كَاد</strong> — خبره فعل مضارع بغير «أن» غالباً، بمعنى «قرب». وفي النفي الداخل عليه خلاف مشهور.</span></li>
+        <li><span class="bullet">◆</span><span><strong>كَرَب</strong> — خبره دائماً بغير «أن».</span></li>
+        <li><span class="bullet">◆</span><span><strong>أَوْشَك</strong> — خبره مع «أن» أو بغيرها. وزاد بعضهم «جَعَل» و«طَفَق» و«أَخَذ» فتصير سبعة.</span></li>
+      </ul>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 12 -->
+    <article class="page fade-in" id="naw12">
+      <div class="section-header">
+        <span class="section-num">النوع الثاني عشر</span>
+        <h2 class="section-title">أفعال المدح والذم</h2>
+      </div>
+      <ul class="item-list">
+        <li><span class="bullet">◆</span><span><strong>نِعْم</strong> — فعل مدح. أصله «نَعِم» فكسرت الفاء اتباعاً ثم أسكنت تخفيفاً. فاعله اسم جنس معرّف، أو مضاف إلى معرّف، أو ضمير مستتر مميَّز بنكرة. والمخصوص يجب مطابقته للفاعل.</span></li>
+        <li><span class="bullet">◆</span><span><strong>بِئْس</strong> — فعل ذم. أصله «بَيِس» من باب «علم». وحكم المخصوص بالذم كالمخصوص بالمدح.</span></li>
+        <li><span class="bullet">◆</span><span><strong>سَاء</strong> — مرادف لـ«بئس» في جميع وجوه الاستعمال.</span></li>
+        <li><span class="bullet">◆</span><span><strong>حَبَّذَا</strong> — مرادف لـ«نعم»، وفاعله «ذا»، والمخصوص بعده. لا يطابق فاعله في التثنية والجمع والتأنيث. ولا يجوز التصرف في هذه الأفعال غير إلحاق التاء؛ ولهذا سميت غير متصرفة.</span></li>
+      </ul>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- NAW' 13 -->
+    <article class="page fade-in" id="naw13">
+      <div class="section-header">
+        <span class="section-num">النوع الثالث عشر</span>
+        <h2 class="section-title">أفعال القلوب</h2>
+      </div>
+      <p class="body-text">إنما سميت بذلك لأن صدورها من القلب لا من الجوارح. تدخل على المبتدأ والخبر فتنصبهما معاً مفعولين. وهي سبعة:</p>
+
+      <div class="pull-rule"><strong>أفعال الشك:</strong> حَسِبَ وظَنَّ وخَالَ — نحو: <span class="example">«حسبت زيداً فاضلاً»</span>. و«ظننت» من الظنة بمعنى التهمة تقتضي مفعولاً واحداً.</div>
+
+      <div class="pull-rule"><strong>أفعال اليقين:</strong> عَلِمَ ورَأَى ووَجَدَ — نحو: <span class="example">«علمت زيداً أميناً»</span>. وكل منها يجيء أحياناً بمعنى يقتضي مفعولاً واحداً.</div>
+
+      <div class="pull-rule"><strong>المشترك:</strong> زَعَمَ — لليقين تارةً وللشك تارةً أخرى. ولا يجوز الاقتصار على أحد المفعولين لأنهما كالاسم الواحد.</div>
+
+      <p class="body-text">وإذا توسطت هذه الأفعال بين مفعوليها أو تأخرت جاز إبطال عملها. وإذا زيدت الهمزة في «علمت» و«رأيت» صارا متعديين إلى ثلاثة مفاعيل. وكذا «أَنْبَأَ» و«نَبَّأَ» و«أَخْبَرَ» و«خَبَّرَ».</p>
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- ════════════════════════════════════
+         QIYASIYYA
+    ════════════════════════════════════ -->
+    <div id="qiyasiyya" class="part-header fade-in">
+      <div class="ornament-row">— ✦ —</div>
+      <h2>العوامل القياسية</h2>
+    </div>
+
+    <article class="page fade-in">
+      <p class="body-text">العوامل القياسية سبعة:</p>
+
+      <div class="particle-heading" id="q1">
+        <div class="letter">١</div>
+        <div class="label">الفعل</div>
+      </div>
+      <p class="body-text">الفعل مطلقاً — لازماً أو متعدياً، ماضياً أو مضارعاً، أمراً أو نهياً — كل فعل يرفع الفاعل. والمتعدي ينصب المفعول به أيضاً. ولا يجوز تقديم الفاعل على الفعل ولا حذفه، بخلاف المفعول.</p>
+
+      <div class="particle-heading" id="q2">
+        <div class="letter">٢</div>
+        <div class="label">المصدر</div>
+      </div>
+      <p class="body-text">المصدر اسم الحدث الذي اشتق منه الفعل. البصريون يرون المصدر أصلاً لاستقلاله بنفسه. والكوفيون يرون الفعل أصلاً لإعلال المصدر بإعلاله. والراجح دليل البصريين. والمصدر يعمل عمل فعله فيرفع الفاعل وينصب المفعول إن كان فعله متعدياً.</p>
+
+      <div class="particle-heading" id="q3">
+        <div class="letter">٣</div>
+        <div class="label">اسم الفاعل</div>
+      </div>
+      <p class="body-text">كل اسم اشتق من فعل لذات من قام به. يعمل عمل فعله بشرطين: أن يكون بمعنى الحال أو الاستقبال، وأن يعتمد على مبتدأ أو موصول أو موصوف أو ذي حال أو نفي أو استفهام. وإن دخلت عليه الألف واللام عمل في كل حال. وصيغ المبالغة كـ«ضرّاب» و«ضروب» مثله في العمل.</p>
+
+      <div class="particle-heading" id="q4">
+        <div class="letter">٤</div>
+        <div class="label">اسم المفعول</div>
+      </div>
+      <p class="body-text">كل اسم اشتق لذات من وقع عليه الفعل. يعمل عمل فعله المجهول فيرفع اسماً واحداً نائباً عن الفاعل. وشرط عمله وأحكامه كاسم الفاعل.</p>
+
+      <div class="particle-heading" id="q5">
+        <div class="letter">٥</div>
+        <div class="label">الصفة المشبَّهة</div>
+      </div>
+      <p class="body-text">مشتقة من الفعل اللازم، دالة على ثبوت مصدرها لفاعلها استمراراً ودواماً. تعمل عمل فعلها من غير اشتراط زمان. وقد يكون معمولها منصوباً على التشبيه بالمفعول أو التمييز، أو مجروراً على الإضافة.</p>
+
+      <div class="particle-heading" id="q6">
+        <div class="letter">٦</div>
+        <div class="label">المضاف</div>
+      </div>
+      <p class="body-text">كل اسم أضيف إلى اسم آخر فيجر المضاف إليه. الإضافة: بمعنى «اللام» نحو: <span class="example">«غلام زيد»</span>، أو «من» نحو: <span class="example">«خاتم فضة»</span>، أو «في» نحو: <span class="example">«ضرب اليوم»</span>.</p>
+
+      <div class="particle-heading" id="q7">
+        <div class="letter">٧</div>
+        <div class="label">الاسم التام</div>
+      </div>
+      <p class="body-text">كل اسم تم واستغنى عن الإضافة بأن يكون في آخره تنوين أو نونا التثنية والجمع. وهو ينصب النكرة تمييزاً يرفع عنه الإبهام، نحو: <span class="example">«عندي رطل زيتاً»</span> و<span class="example">«عشرون درهماً»</span>.</p>
+
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- ════════════════════════════════════
+         MA'NAWIYYA
+    ════════════════════════════════════ -->
+    <div id="maanawiyya" class="part-header fade-in">
+      <div class="ornament-row">— ✦ —</div>
+      <h2>العوامل المعنوية</h2>
+    </div>
+
+    <article class="page fade-in">
+      <p class="body-text">المراد من العامل المعنوي ما يُعرف بالقلب وليس للسان حظ فيه. وهما عددان:</p>
+
+      <div class="pull-rule">
+        <strong>الأول:</strong> العامل في المبتدأ والخبر — وهو الابتداء، أي خلو الاسم عن العوامل اللفظية — نحو: <span class="example">«زيد منطلق»</span>.
+      </div>
+
+      <div class="pull-rule">
+        <strong>الثاني:</strong> العامل في الفعل المضارع — وهو صحة وقوعه موقع الاسم — نحو: <span class="example">«زيد يعلم»</span>؛ إذ يصح أن يقال موقعه «عالم». وعند الكوفيين أن العامل هو تجرده عن الناصب والجازم، وهو مختار ابن مالك.
+      </div>
+
+      <div class="ornament-divider"><span>✦</span></div>
+    </article>
+
+    <!-- ── COLOPHON ── -->
+    <article class="page fade-in" id="colophon">
+      <div class="colophon">
+        <div class="tammat">تمَّ بعون الله وتوفيقه</div>
+        <div class="ornament-divider"><span>❧</span></div>
+        <div class="salah">
+          والحمد لله رب العالمين<br>
+          والصلاة والسلام على سيدنا محمد<br>
+          وعلى آله وصحبه أجمعين
+        </div>
+      </div>
+    </article>
+
+  </main>
+</div>
+
+<button class="toc-toggle" id="tocToggle" title="فهرس الكتاب">☰</button>
+
+<script>
+/* ── TOC TOGGLE ── */
+const tocSidebar = document.getElementById('tocSidebar');
+const tocToggle  = document.getElementById('tocToggle');
+tocToggle.addEventListener('click', () => {
+  tocSidebar.classList.toggle('open');
+});
+document.addEventListener('click', e => {
+  if (!tocSidebar.contains(e.target) && e.target !== tocToggle) {
+    tocSidebar.classList.remove('open');
+  }
+});
+
+/* ── PROGRESS BAR ── */
+const progressBar = document.getElementById('progressBar');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  progressBar.style.transform = `scaleX(${pct})`;
+});
+
+/* ── SCROLL-TRIGGERED FADE IN ── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.07 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+/* ── ACTIVE TOC LINK ── */
+const sections = document.querySelectorAll('[id]');
+const tocLinks = document.querySelectorAll('.toc-list a');
+
+const tocObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`.toc-list a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+
+sections.forEach(s => tocObserver.observe(s));
+</script>
+</body>
+</html>
